@@ -168,7 +168,7 @@
             }
             
             try {
-                const response = await fetch(`http://localhost:3001/api${endpoint}`, options);
+                const response = await fetch(`https://akistv-backend.onrender.com/api${endpoint}`, options);
                 const data = await response.json();
                 
                 if (!response.ok) {

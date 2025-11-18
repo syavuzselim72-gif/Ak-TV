@@ -163,7 +163,7 @@
         });
         
         // Kullanıcı bilgilerini yükle
-        fetch('http://localhost:3001/api/auth/profile', {
+        fetch('https://akistv-backend.onrender.com/api/auth/profile', {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -247,7 +247,7 @@
                     return;
                 }
                 
-                const response = await fetch('http://localhost:3001/api/auth/profile', {
+                const response = await fetch('https://akistv-backend.onrender.com/api/auth/profile', {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',

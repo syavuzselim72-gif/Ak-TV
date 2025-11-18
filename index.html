@@ -131,7 +131,8 @@
         // Tüm videoları yükle
         async function loadAllVideos() {
             try {
-                const response = await fetch('http://localhost:3001/api/videos');
+                // GitHub Pages için backend URL'sini buraya ekleyin
+                const response = await fetch('https://akistv-backend.onrender.com/api/videos');
                 const videos = await response.json();
                 
                 if (response.ok) {
@@ -183,7 +184,8 @@
         // Trend videoları yükle
         async function loadTrendingVideos() {
             try {
-                const response = await fetch('http://localhost:3001/api/videos/trending');
+                // GitHub Pages için backend URL'sini buraya ekleyin
+                const response = await fetch('https://akistv-backend.onrender.com/api/videos/trending');
                 const videos = await response.json();
                 
                 if (response.ok) {
@@ -241,7 +243,7 @@
             }
             
             try {
-                const response = await fetch(`http://localhost:3001/api/videos/${videoId}/like`, {
+                const response = await fetch(`https://akistv-backend.onrender.com/api/videos/${videoId}/like`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`
