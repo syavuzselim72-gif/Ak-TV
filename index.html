@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AkışTV - Video Platformu</title>
+    <link href="/style.css" rel="stylesheet">
+</head>
+<body>
+    <header class="navbar">
+        <div class="navbar-container">
+            <a href="/index.html" class="navbar-brand">AkışTV</a>
+            <nav>
+                <div class="navbar-nav" id="authLinks">
+                    <a href="/login.html" class="navbar-link">Giriş Yap</a>
+                    <a href="/register.html" class="navbar-link">Kayıt Ol</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mt-8 px-4 pb-12">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1 class="hero-title">Videolarınızı Paylaşın</h1>
+                <p class="hero-subtitle">AkışTV ile videolarınızı dünyanın dört bir yanında izleyicilerle paylaşın</p>
+                <div>
+                    <a href="/register.html" class="btn btn-primary mr-4">Hemen Başlayın</a>
+                    <a href="/login.html" class="btn btn-outline">Giriş Yap</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Trending Videos Section -->
+        <section class="mb-16">
+            <h2 class="section-title">Trend Videolar</h2>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="trendingVideos">
+                <!-- Trending videos will be loaded here -->
+            </div>
+        </section>
+
+        <!-- All Videos Section -->
+        <section class="mb-16">
+            <h2 class="section-title">Tüm Videolar</h2>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="videoGrid">
+                <!-- Videos will be loaded here by JavaScript -->
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3 class="footer-title">AkışTV</h3>
+                    <p class="text-gray-300">Videolarınızı paylaşmanın en iyi yolu.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3 class="footer-title">Bağlantılar</h3>
+                    <div class="footer-links">
+                        <a href="/index.html" class="footer-link">Ana Sayfa</a>
+                        <a href="/login.html" class="footer-link">Giriş Yap</a>
+                        <a href="/register.html" class="footer-link">Kayıt Ol</a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h3 class="footer-title">Destek</h3>
+                    <div class="footer-links">
+                        <a href="#" class="footer-link">Yardım Merkezi</a>
+                        <a href="#" class="footer-link">İletişim</a>
+                        <a href="#" class="footer-link">Gizlilik Politikası</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2023 AkışTV. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module">
+        // JWT ve tema utility fonksiyonlarını import et
+        import { getToken, isAuthenticated, logout } from './utils/jwt.js';
+        import { initTheme, toggleTheme, getTheme } from './utils/theme.js';
+        
+        // Tema'yı uygula
+        initTheme();
+        
+        // Kullanıcı oturum kontrolü
+        const token = getToken();
+        const user = JSON.parse(localStorage.getItem('user'));
+        
+        if (isAuthenticated() && user) {
+            const currentTheme = getTheme();
+            const themeToggleText = currentTheme === 'dark' ? ' Açık Tema' : ' Koyu Tema';
+            
+            // Admin kullanıcı mı kontrol et
+            const isAdmin = user.isAdmin === true;
+            
+            let adminLink = '';
+            if (isAdmin) {
+                adminLink = '<a href="/admin.html" class="navbar-link">Admin Paneli</a>';
+            }
+            
+            document.getElementById('authLinks').innerHTML = `
+                <a href="/upload.html" class="navbar-link">Video Yükle</a>
+                ${adminLink}
+                <a href="/profile.html" class="navbar-link">${user.name}</a>
+                <button id="themeToggleBtn" class="navbar-link">${themeToggleText}</button>
+                <button id="logoutBtn" class="navbar-link">Çıkış Yap</button>
+            `;
+            
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                logout();
+                window.location.reload();
+            });
+            
+            document.getElementById('themeToggleBtn').addEventListener('click', function() {
+                const newTheme = toggleTheme();
+                const themeToggleText = newTheme === 'dark' ? ' Açık Tema' : ' Koyu Tema';
+                this.textContent = themeToggleText;
+            });
+        }
+        
+        // Tüm videoları yükle
+        async function loadAllVideos() {
+            try {
+                const response = await fetch('http://localhost:3001/api/videos');
+                const videos = await response.json();
+                
+                if (response.ok) {
+                    const videoGrid = document.getElementById('videoGrid');
+                    
+                    if (videos.length === 0) {
+                        videoGrid.innerHTML = '<p class="text-center col-span-full">Henüz video yüklenmemiş.</p>';
+                        return;
+                    }
+                    
+                    videoGrid.innerHTML = videos.map(video => `
+                        <div class="card overflow-hidden cursor-pointer transform transition duration-300 hover:scale-105" onclick="window.location.href='video.html?id=${video._id}'">
+                            <div class="relative">
+                                <div class="bg-gradient-to-br from-gray-200 to-gray-300 border-2 border-dashed border-gray-300 w-full h-48"></div>
+                                <div class="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
+                                    ${formatDuration(Math.floor(Math.random() * 600) + 30)}
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <h3 class="font-bold text-lg mb-1 line-clamp-2">${video.title}</h3>
+                                <p class="text-gray-600 text-sm mb-2">${video.uploader?.name || 'Bilinmeyen Kullanıcı'}</p>
+                                <div class="flex items-center text-gray-500 text-sm">
+                                    <span>${formatViews(Math.floor(Math.random() * 100000))} views</span>
+                                    <span class="mx-2">•</span>
+                                    <span>${formatDate(video.createdAt)}</span>
+                                </div>
+                                <div class="mt-2 flex items-center text-gray-500 text-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+                                    </svg>
+                                    <span>${video.likeCount || 0}</span>
+                                    <span class="mx-2">•</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                    </svg>
+                                    <span>${video.commentCount || 0}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    console.error('Error loading videos:', videos.message);
+                }
+            } catch (error) {
+                console.error('Error loading videos:', error);
+            }
+        }
+        
+        // Trend videoları yükle
+        async function loadTrendingVideos() {
+            try {
+                const response = await fetch('http://localhost:3001/api/videos/trending');
+                const videos = await response.json();
+                
+                if (response.ok) {
+                    const trendingVideos = document.getElementById('trendingVideos');
+                    
+                    if (videos.length === 0) {
+                        trendingVideos.innerHTML = '<p class="text-center col-span-full">Henüz trend video bulunmuyor.</p>';
+                        return;
+                    }
+                    
+                    trendingVideos.innerHTML = videos.map(video => `
+                        <div class="card overflow-hidden cursor-pointer transform transition duration-300 hover:scale-105" onclick="window.location.href='video.html?id=${video._id}'">
+                            <div class="relative">
+                                <div class="bg-gradient-to-br from-gray-200 to-gray-300 border-2 border-dashed border-gray-300 w-full h-48"></div>
+                                <div class="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
+                                    ${formatDuration(Math.floor(Math.random() * 600) + 30)}
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <h3 class="font-bold text-lg mb-1 line-clamp-2">${video.title}</h3>
+                                <p class="text-gray-600 text-sm mb-2">${video.uploader?.name || 'Bilinmeyen Kullanıcı'}</p>
+                                <div class="flex items-center text-gray-500 text-sm">
+                                    <span>${formatViews(Math.floor(Math.random() * 100000))} views</span>
+                                    <span class="mx-2">•</span>
+                                    <span>${formatDate(video.createdAt)}</span>
+                                </div>
+                                <div class="mt-2 flex items-center text-gray-500 text-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+                                    </svg>
+                                    <span>${video.likeCount || 0}</span>
+                                    <span class="mx-2">•</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                    </svg>
+                                    <span>${video.commentCount || 0}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    console.error('Error loading trending videos:', videos.message);
+                }
+            } catch (error) {
+                console.error('Error loading trending videos:', error);
+            }
+        }
+        
+        // Video beğen
+        window.likeVideo = async function(videoId) {
+            if (!isAuthenticated()) {
+                alert('Bu işlemi yapmak için giriş yapmalısınız.');
+                window.location.href = '/login.html';
+                return;
+            }
+            
+            try {
+                const response = await fetch(`http://localhost:3001/api/videos/${videoId}/like`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    // Sayfayı yenile
+                    loadTrendingVideos();
+                    loadAllVideos();
+                } else {
+                    const data = await response.json();
+                    alert(data.message || 'Beğeni işlemi başarısız oldu.');
+                }
+            } catch (error) {
+                console.error('Error liking video:', error);
+                alert('Beğeni işlemi sırasında bir hata oluştu.');
+            }
+        };
+        
+        // Sayfa yüklendiğinde videoları getir
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTrendingVideos();
+            loadAllVideos();
+        });
+    </script>
+</body>
+</html>
