@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kayıt Ol - AkışTV</title>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <link href="/style.css" rel="stylesheet">
+</head>
+<body>
+    <header class="navbar">
+        <div class="navbar-container">
+            <a href="/index.html" class="navbar-brand">AkışTV</a>
+            <nav>
+                <div class="navbar-nav">
+                    <a href="/index.html" class="navbar-link">Ana Sayfa</a>
+                    <a href="/login.html" class="navbar-link">Giriş Yap</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mt-12 px-4 max-w-md">
+        <div class="card p-8">
+            <div class="text-center mb-8">
+                <div class="bg-blue-100 text-blue-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-bold">Bir Hesap Oluşturun</h2>
+                <p class="text-gray-500 mt-2">Videolarınızı paylaşmaya başlayın</p>
+            </div>
+            
+            <form id="registerForm">
+                <div class="mb-6">
+                    <label for="name" class="form-label">Ad Soyad</label>
+                    <input type="text" id="name" name="name" required
+                        class="form-input">
+                </div>
+                
+                <div class="mb-6">
+                    <label for="email" class="form-label">E-posta</label>
+                    <input type="email" id="email" name="email" required
+                        class="form-input">
+                </div>
+                
+                <div class="mb-6">
+                    <label for="password" class="form-label">Şifre</label>
+                    <input type="password" id="password" name="password" required
+                        class="form-input">
+                </div>
+                
+                <div class="mb-6">
+                    <label for="confirmPassword" class="form-label">Şifre Tekrar</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required
+                        class="form-input">
+                </div>
+                
+                <div class="mb-6">
+                    <label for="mathCaptcha" class="form-label">Matematik İşlemi</label>
+                    <div class="flex items-center">
+                        <span id="mathCaptchaQuestion" class="mr-2 font-medium">Yükleniyor...</span>
+                        <input type="text" id="mathCaptcha" name="mathCaptcha" required
+                            class="form-input w-24">
+                    </div>
+                </div>
+                
+                <button type="submit"
+                    class="btn btn-primary w-full mb-6">
+                    Kayıt Ol
+                </button>
+                
+                <div class="text-sm text-gray-500 mb-6">
+                    <label class="flex items-center">
+                        <input type="checkbox" required class="rounded border-gray-300 text-red-600 focus:ring-red-500">
+                        <span class="ml-2"> <a href="/terms.html" class="text-blue-600 hover:text-blue-800">Kullanım Şartları</a> ve <a href="/privacy.html" class="text-blue-600 hover:text-blue-800">Gizlilik Politikası</a>'nı kabul ediyorum.</span>
+                    </label>
+                </div>
+            </form>
+            
+            <div class="divider"></div>
+            
+            <div class="text-center">
+                <p class="text-gray-600">
+                    Zaten hesabınız var mı? <a href="/login.html" class="text-blue-600 hover:text-blue-800 font-medium">Giriş Yap</a>
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer mt-12">
+        <div class="footer-container">
+            <div class="footer-bottom">
+                <p>&copy; 2023 AkışTV. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module">
+        // Tema utility fonksiyonlarını import et
+        import { initTheme } from './utils/theme.js';
+        
+        // Tema'yı uygula
+        initTheme();
+        
+        // Matematik CAPTCHA'yı yükle
+        async function loadMathCaptcha() {
+            try {
+                const response = await fetch('http://localhost:3001/api/auth/math-captcha', {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('mathCaptchaQuestion').textContent = data.question;
+                } else {
+                    console.error('CAPTCHA yüklenirken hata oluştu:', data.message);
+                }
+            } catch (error) {
+                console.error('CAPTCHA yüklenirken hata oluştu:', error);
+                document.getElementById('mathCaptchaQuestion').textContent = 'Hata oluştu, lütfen sayfayı yenileyin';
+            }
+        }
+        
+        // Sayfa yüklendiğinde CAPTCHA'yı yükle
+        document.addEventListener('DOMContentLoaded', function() {
+            loadMathCaptcha();
+        });
+        
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const mathCaptchaAnswer = document.getElementById('mathCaptcha').value;
+            
+            // Basit form validasyonu
+            if (!name || !email || !password || !confirmPassword || !mathCaptchaAnswer) {
+                alert('Lütfen tüm alanları doldurun!');
+                return;
+            }
+            
+            // Şifre uzunluğu kontrolü
+            if (password.length < 6) {
+                alert('Şifre en az 6 karakter olmalıdır!');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                alert('Şifreler eşleşmiyor!');
+                return;
+            }
+            
+            // Yükleniyor mesajı göster
+            const submitButton = document.querySelector('button[type="submit"]');
+            const originalText = submitButton.textContent;
+            submitButton.textContent = 'Kayıt olunuyor...';
+            submitButton.disabled = true;
+            
+            try {
+                // Gerçek API çağrısı
+                const response = await fetch('http://localhost:3001/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ name, email, password, mathCaptchaAnswer })
+                });
+                
+                const data = await response.json();
+                
+                if (data.message) {
+                    alert(data.message);
+                    // CAPTCHA'yı yenile
+                    loadMathCaptcha();
+                    document.getElementById('mathCaptcha').value = '';
+                } else {
+                    // Kayıt başarılı
+                    alert('Kayıt başarılı! Şimdi giriş yapabilirsiniz.');
+                    window.location.href = '/login.html';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Kayıt sırasında bir hata oluştu!');
+                
+                // CAPTCHA'yı yenile
+                loadMathCaptcha();
+                document.getElementById('mathCaptcha').value = '';
+            } finally {
+                // Buton durumunu geri yükle
+                submitButton.textContent = originalText;
+                submitButton.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

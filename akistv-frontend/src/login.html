@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giriş Yap - AkışTV</title>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <link href="/style.css" rel="stylesheet">
+</head>
+<body>
+    <header class="navbar">
+        <div class="navbar-container">
+            <a href="/index.html" class="navbar-brand">AkışTV</a>
+            <nav>
+                <div class="navbar-nav">
+                    <a href="/index.html" class="navbar-link">Ana Sayfa</a>
+                    <a href="/register.html" class="navbar-link">Kayıt Ol</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mt-12 px-4 max-w-md">
+        <div class="card p-8">
+            <div class="text-center mb-8">
+                <div class="bg-red-100 text-red-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-bold">Hesabınıza Giriş Yapın</h2>
+                <p class="text-gray-500 mt-2">Devam etmek için bilgilerinizi girin</p>
+            </div>
+            
+            <form id="loginForm">
+                <div class="mb-6">
+                    <label for="email" class="form-label">E-posta</label>
+                    <input type="email" id="email" name="email" required
+                        class="form-input">
+                </div>
+                
+                <div class="mb-6">
+                    <label for="password" class="form-label">Şifre</label>
+                    <input type="password" id="password" name="password" required
+                        class="form-input">
+                </div>
+                
+                <div class="mb-6">
+                    <label for="mathCaptcha" class="form-label">Matematik İşlemi</label>
+                    <div class="flex items-center">
+                        <span id="mathCaptchaQuestion" class="mr-2 font-medium">Yükleniyor...</span>
+                        <input type="text" id="mathCaptcha" name="mathCaptcha" required
+                            class="form-input w-24">
+                    </div>
+                </div>
+                
+                <button type="submit"
+                    class="btn btn-primary w-full mb-6">
+                    Giriş Yap
+                </button>
+                
+                <div class="text-center">
+                    <a href="/forgot-password.html" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                        Şifrenizi mi unuttunuz?
+                    </a>
+                </div>
+            </form>
+            
+            <div class="divider"></div>
+            
+            <div class="text-center">
+                <p class="text-gray-600">
+                    Hesabınız yok mu? <a href="/register.html" class="text-blue-600 hover:text-blue-800 font-medium">Kayıt Ol</a>
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer mt-12">
+        <div class="footer-container">
+            <div class="footer-bottom">
+                <p>&copy; 2023 AkışTV. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module">
+        // JWT ve tema utility fonksiyonlarını import et
+        import { saveToken, saveUser } from './utils/jwt.js';
+        import { initTheme } from './utils/theme.js';
+        
+        // Tema'yı uygula
+        initTheme();
+        
+        // Matematik CAPTCHA'yı yükle
+        async function loadMathCaptcha() {
+            try {
+                const response = await fetch('http://localhost:3001/api/auth/math-captcha', {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('mathCaptchaQuestion').textContent = data.question;
+                } else {
+                    console.error('CAPTCHA yüklenirken hata oluştu:', data.message);
+                }
+            } catch (error) {
+                console.error('CAPTCHA yüklenirken hata oluştu:', error);
+                document.getElementById('mathCaptchaQuestion').textContent = 'Hata oluştu, lütfen sayfayı yenileyin';
+            }
+        }
+        
+        // Sayfa yüklendiğinde CAPTCHA'yı yükle
+        document.addEventListener('DOMContentLoaded', function() {
+            loadMathCaptcha();
+        });
+        
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const mathCaptchaAnswer = document.getElementById('mathCaptcha').value;
+            
+            // Basit form validasyonu
+            if (!email || !password || !mathCaptchaAnswer) {
+                alert('Lütfen tüm alanları doldurun!');
+                return;
+            }
+            
+            // Şifre uzunluğu kontrolü
+            if (password.length < 6) {
+                alert('Şifre en az 6 karakter olmalıdır!');
+                return;
+            }
+            
+            // Yükleniyor mesajı göster
+            const submitButton = document.querySelector('button[type="submit"]');
+            const originalText = submitButton.textContent;
+            submitButton.textContent = 'Giriş yapılıyor...';
+            submitButton.disabled = true;
+            
+            try {
+                // Gerçek API çağrısı
+                const response = await fetch('http://localhost:3001/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ email, password, mathCaptchaAnswer })
+                });
+                
+                const data = await response.json();
+                
+                if (data.message) {
+                    alert(data.message);
+                    // CAPTCHA'yı yenile
+                    loadMathCaptcha();
+                    document.getElementById('mathCaptcha').value = '';
+                } else {
+                    // Giriş başarılı, token'ı ve kullanıcı bilgilerini localStorage'a kaydet
+                    saveToken(data.token);
+                    saveUser(data);
+                    alert('Giriş başarılı!');
+                    window.location.href = '/index.html';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Giriş sırasında bir hata oluştu!');
+                
+                // CAPTCHA'yı yenile
+                loadMathCaptcha();
+                document.getElementById('mathCaptcha').value = '';
+            } finally {
+                // Buton durumunu geri yükle
+                submitButton.textContent = originalText;
+                submitButton.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

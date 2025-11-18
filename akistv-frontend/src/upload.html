@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Yükle - AkışTV</title>
+    <link href="/style.css" rel="stylesheet">
+</head>
+<body>
+    <header class="navbar">
+        <div class="navbar-container">
+            <a href="/index.html" class="navbar-brand">AkışTV</a>
+            <nav>
+                <div class="navbar-nav" id="authLinks">
+                    <a href="/index.html" class="navbar-link">Ana Sayfa</a>
+                    <a href="/login.html" class="navbar-link">Giriş Yap</a>
+                    <a href="/register.html" class="navbar-link">Kayıt Ol</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mt-8 px-4 max-w-2xl">
+        <div class="card p-8">
+            <div class="text-center mb-8">
+                <div class="bg-red-100 text-red-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-bold">Video Yükle</h2>
+                <p class="text-gray-500 mt-2">İzleyicilerinizle paylaşmak için video yükleyin</p>
+            </div>
+            
+            <form id="uploadForm" enctype="multipart/form-data">
+                <div class="mb-6">
+                    <label for="title" class="form-label">Video Başlığı *</label>
+                    <input type="text" id="title" name="title" required
+                        class="form-input"
+                        placeholder="Video başlığını girin (maksimum 100 karakter)"
+                        maxlength="100">
+                </div>
+                
+                <div class="mb-6">
+                    <label for="description" class="form-label">Açıklama</label>
+                    <textarea id="description" name="description" rows="4"
+                        class="form-textarea"
+                        placeholder="Video açıklamasını girin (maksimum 1000 karakter)"
+                        maxlength="1000"></textarea>
+                </div>
+                
+                <div class="mb-6">
+                    <label for="category" class="form-label">Kategori *</label>
+                    <select id="category" name="category"
+                        class="form-select" required>
+                        <option value="">Kategori Seçin</option>
+                        <option value="Eğlence">Eğlence</option>
+                        <option value="Oyun">Oyun</option>
+                        <option value="Müzik">Müzik</option>
+                        <option value="Spor">Spor</option>
+                        <option value="Eğitim">Eğitim</option>
+                        <option value="Diğer">Diğer</option>
+                    </select>
+                </div>
+                
+                <div class="mb-6">
+                    <label for="tags" class="form-label">Etiketler (virgülle ayırın)</label>
+                    <input type="text" id="tags" name="tags"
+                        class="form-input"
+                        placeholder="etiket1, etiket2, etiket3">
+                </div>
+                
+                <div class="mb-6">
+                    <label class="form-label">Video Dosyası *</label>
+                    <div class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer hover:border-red-500 transition-colors duration-300"
+                         id="dropZone">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                        </svg>
+                        <p class="text-gray-600 mb-2">Dosyaları buraya sürükleyin veya</p>
+                        <button type="button" class="btn btn-outline">Dosya Seçin</button>
+                        <input type="file" id="video" name="video" accept="video/*" required
+                            class="hidden">
+                    </div>
+                    <p class="text-sm text-gray-500 mt-2">Desteklenen formatlar: MP4, MOV, AVI, WMV. Maksimum boyut: 100MB</p>
+                </div>
+                
+                <div class="card p-6 mb-6">
+                    <h4 class="font-bold mb-4">Yayın Ayarları</h4>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="font-medium">Video herkese açık olsun</p>
+                                <p class="text-sm text-gray-500">Herkes bu videoyu görebilecek</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="isPublic" name="isPublic" checked class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-500"></div>
+                            </label>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="font-medium">Yorumlara izin ver</p>
+                                <p class="text-sm text-gray-500">İzleyiciler yorum yapabilir</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="allowComments" name="allowComments" checked class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-500"></div>
+                            </label>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="font-medium">Beğenilme sayısını göster</p>
+                                <p class="text-sm text-gray-500">Beğeni istatistikleri herkese açık</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="showLikes" name="showLikes" checked class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-500"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="submit"
+                    class="btn btn-primary w-full">
+                    Video Yükle
+                </button>
+            </form>
+        </div>
+    </main>
+
+    <footer class="footer mt-12">
+        <div class="footer-container">
+            <div class="footer-bottom">
+                <p>&copy; 2023 AkışTV. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module">
+        // JWT ve tema utility fonksiyonlarını import et
+        import { getToken, isAuthenticated } from './utils/jwt.js';
+        import { initTheme } from './utils/theme.js';
+        
+        // Tema'yı uygula
+        initTheme();
+        
+        // Kullanıcı oturum kontrolü
+        const token = getToken();
+        
+        if (!isAuthenticated()) {
+            window.location.href = '/login.html';
+        } else {
+            // Kullanıcı menüsünü güncelle
+            document.getElementById('authLinks').innerHTML = `
+                <a href="/index.html" class="navbar-link">Ana Sayfa</a>
+                <a href="/upload.html" class="navbar-link">Video Yükle</a>
+                <a href="/profile.html" class="navbar-link">Profil</a>
+                <button id="logoutBtn" class="navbar-link">Çıkış Yap</button>
+            `;
+            
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = '/index.html';
+            });
+        }
+        
+        // Dosya seçme alanı
+        document.getElementById('dropZone').addEventListener('click', function() {
+            document.getElementById('video').click();
+        });
+        
+        // Dosya seçildiğinde göster
+        document.getElementById('video').addEventListener('change', function(e) {
+            const fileName = e.target.files[0]?.name;
+            if (fileName) {
+                const dropZone = document.getElementById('dropZone');
+                dropZone.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-red-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <p class="text-red-600 font-medium">${fileName}</p>
+                    <p class="text-sm text-gray-500 mt-2">Dosya seçildi. Yükleme için formu gönderin.</p>
+                `;
+            }
+        });
+        
+        // Video yükleme formu
+        document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Form verilerini topla
+            const formData = new FormData();
+            formData.append('title', document.getElementById('title').value);
+            formData.append('description', document.getElementById('description').value);
+            formData.append('category', document.getElementById('category').value);
+            formData.append('tags', document.getElementById('tags').value);
+            formData.append('isPublic', document.getElementById('isPublic').checked);
+            formData.append('allowComments', document.getElementById('allowComments').checked);
+            formData.append('showLikes', document.getElementById('showLikes').checked);
+            formData.append('video', document.getElementById('video').files[0]);
+            
+            // Gerekli alanlar kontrolü
+            if (!document.getElementById('title').value || !document.getElementById('category').value || !document.getElementById('video').files[0]) {
+                alert('Lütfen gerekli alanları doldurun: Başlık, Kategori ve Video Dosyası');
+                return;
+            }
+            
+            // Yükleniyor mesajı göster
+            const submitButton = document.querySelector('button[type="submit"]');
+            const originalText = submitButton.textContent;
+            submitButton.textContent = 'Yükleniyor...';
+            submitButton.disabled = true;
+            
+            try {
+                const response = await fetch('http://localhost:3001/api/videos', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    alert('Video başarıyla yüklendi!');
+                    window.location.href = '/index.html';
+                } else {
+                    alert(data.message || 'Video yüklenirken bir hata oluştu!');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Video yüklenirken bir hata oluştu!');
+            } finally {
+                // Buton durumunu geri yükle
+                submitButton.textContent = originalText;
+                submitButton.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
