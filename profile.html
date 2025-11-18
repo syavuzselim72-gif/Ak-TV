@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil - AkışTV</title>
+    <link href="/style.css" rel="stylesheet">
+</head>
+<body>
+    <header class="navbar">
+        <div class="navbar-container">
+            <a href="/index.html" class="navbar-brand">AkışTV</a>
+            <nav>
+                <div class="navbar-nav" id="profileNav">
+                    <a href="/index.html" class="navbar-link">Ana Sayfa</a>
+                    <a href="/upload.html" class="navbar-link">Video Yükle</a>
+                    <button id="logoutBtn" class="navbar-link">Çıkış Yap</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mt-8 px-4 max-w-4xl">
+        <div class="card p-8">
+            <div class="text-center mb-8">
+                <h2 class="text-2xl font-bold">Profiliniz</h2>
+                <p class="text-gray-500 mt-2">Profil bilgilerinizi güncelleyin</p>
+            </div>
+            
+            <div class="flex flex-col md:flex-row gap-8">
+                <!-- Avatar ve Temel Bilgiler -->
+                <div class="md:w-1/3">
+                    <div class="card p-6 text-center">
+                        <div class="bg-gradient-to-br from-red-100 to-blue-100 border-2 border-dashed border-gray-300 rounded-full w-32 h-32 mx-auto mb-4 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold" id="userName">Kullanıcı Adı</h3>
+                        <p class="text-gray-600" id="userEmail">email@example.com</p>
+                        <div class="mt-4">
+                            <span class="badge badge-primary">Üye</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card p-6 mt-6">
+                        <h4 class="font-bold mb-4">Hesap Bilgileri</h4>
+                        <div class="space-y-3">
+                            <div>
+                                <p class="text-sm text-gray-500">Katılım Tarihi</p>
+                                <p id="joinDate">1 Ocak 2023</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">Yüklenen Video</p>
+                                <p id="videoCount">0</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Profil Detayları -->
+                <div class="md:w-2/3">
+                    <form id="profileForm">
+                        <div class="mb-6">
+                            <label for="name" class="form-label">Ad Soyad</label>
+                            <input type="text" id="name" name="name" required
+                                class="form-input">
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label for="email" class="form-label">E-posta</label>
+                            <input type="email" id="email" name="email" required
+                                class="form-input">
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label for="description" class="form-label">Açıklama</label>
+                            <textarea id="description" name="description" rows="4"
+                                class="form-textarea"></textarea>
+                        </div>
+                        
+                        <div class="card p-6 mb-6">
+                            <h4 class="font-bold mb-4">Sosyal Medya Bağlantıları</h4>
+                            
+                            <div class="mb-4">
+                                <label for="website" class="form-label">Web Sitesi</label>
+                                <input type="url" id="website" name="website"
+                                    class="form-input">
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="twitter" class="form-label">Twitter</label>
+                                <input type="url" id="twitter" name="twitter"
+                                    class="form-input">
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="instagram" class="form-label">Instagram</label>
+                                <input type="url" id="instagram" name="instagram"
+                                    class="form-input">
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="youtube" class="form-label">YouTube</label>
+                                <input type="url" id="youtube" name="youtube"
+                                    class="form-input">
+                            </div>
+                        </div>
+                        
+                        <button type="submit"
+                            class="btn btn-primary w-full">
+                            Profili Güncelle
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer mt-12">
+        <div class="footer-container">
+            <div class="footer-bottom">
+                <p>&copy; 2023 AkışTV. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module">
+        // JWT, VirusTotal ve tema utility fonksiyonlarını import et
+        import { getToken, saveUser } from './utils/jwt.js';
+        import { validateSocialLinks } from './utils/virusTotal.js';
+        import { initTheme, toggleTheme, getTheme } from './utils/theme.js';
+        
+        // Tema'yı uygula
+        initTheme();
+        
+        // Kullanıcı oturum kontrolü
+        const token = getToken();
+        const user = JSON.parse(localStorage.getItem('user'));
+        
+        if (!token || !user) {
+            window.location.href = '/login.html';
+        }
+        
+        // Çıkış yap ve tema değiştirme butonları
+        const currentTheme = getTheme();
+        const themeToggleText = currentTheme === 'dark' ? ' Açık Tema' : ' Koyu Tema';
+        
+        document.getElementById('logoutBtn').insertAdjacentHTML('afterend', `
+            <button id="themeToggleBtn" class="navbar-link">${themeToggleText}</button>
+        `);
+        
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/index.html';
+        });
+        
+        document.getElementById('themeToggleBtn').addEventListener('click', function() {
+            const newTheme = toggleTheme();
+            const themeToggleText = newTheme === 'dark' ? ' Açık Tema' : ' Koyu Tema';
+            this.textContent = themeToggleText;
+        });
+        
+        // Kullanıcı bilgilerini yükle
+        fetch('http://localhost:3001/api/auth/profile', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Admin kullanıcı mı kontrol et
+            if (data.isAdmin === true) {
+                document.getElementById('profileNav').insertAdjacentHTML('afterbegin', `
+                    <a href="/admin.html" class="navbar-link">Admin Paneli</a>
+                `);
+            }
+            if (data.message) {
+                alert(data.message);
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = '/login.html';
+            } else {
+                // Kullanıcı bilgilerini forma doldur
+                document.getElementById('userName').textContent = data.name;
+                document.getElementById('userEmail').textContent = data.email;
+                document.getElementById('name').value = data.name;
+                document.getElementById('email').value = data.email;
+                document.getElementById('description').value = data.description || '';
+                
+                if (data.socialLinks) {
+                    document.getElementById('website').value = data.socialLinks.website || '';
+                    document.getElementById('twitter').value = data.socialLinks.twitter || '';
+                    document.getElementById('instagram').value = data.socialLinks.instagram || '';
+                    document.getElementById('youtube').value = data.socialLinks.youtube || '';
+                }
+                
+                // Ek bilgileri göster
+                if (data.createdAt) {
+                    const date = new Date(data.createdAt);
+                    document.getElementById('joinDate').textContent = date.toLocaleDateString('tr-TR');
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Profil bilgileri yüklenirken bir hata oluştu!');
+        });
+        
+        // Profil güncelleme
+        document.getElementById('profileForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Yükleniyor mesajı göster
+            const submitButton = document.querySelector('button[type="submit"]');
+            const originalText = submitButton.textContent;
+            submitButton.textContent = 'Güncelleniyor...';
+            submitButton.disabled = true;
+            
+            try {
+                const formData = {
+                    name: document.getElementById('name').value,
+                    email: document.getElementById('email').value,
+                    description: document.getElementById('description').value,
+                    socialLinks: {
+                        website: document.getElementById('website').value,
+                        twitter: document.getElementById('twitter').value,
+                        instagram: document.getElementById('instagram').value,
+                        youtube: document.getElementById('youtube').value
+                    }
+                };
+                
+                // Sosyal medya bağlantılarını VirusTotal ile doğrula
+                const validationResults = await validateSocialLinks(formData.socialLinks);
+                
+                // Güvensiz bağlantıları kontrol et
+                let hasUnsafeLinks = false;
+                for (const [platform, result] of Object.entries(validationResults)) {
+                    if (result && result.unsafe) {
+                        hasUnsafeLinks = true;
+                        alert(`${platform} bağlantısı güvenli değil: ${result.reason}`);
+                    }
+                }
+                
+                if (hasUnsafeLinks) {
+                    return;
+                }
+                
+                const response = await fetch('http://localhost:3001/api/auth/profile', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.message) {
+                    alert(data.message);
+                    if (response.ok) {
+                        // Güncellenmiş kullanıcı bilgilerini localStorage'a kaydet
+                        const updatedUser = {...user, ...formData};
+                        saveUser(updatedUser);
+                    }
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Profil güncellenirken bir hata oluştu!');
+            } finally {
+                // Buton durumunu geri yükle
+                submitButton.textContent = originalText;
+                submitButton.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

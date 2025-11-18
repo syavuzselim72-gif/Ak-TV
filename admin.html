@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - AkışTV</title>
+    <link href="/style.css" rel="stylesheet">
+</head>
+<body>
+    <header class="navbar">
+        <div class="navbar-container">
+            <a href="/index.html" class="navbar-brand">AkışTV - Admin Panel</a>
+            <nav>
+                <div class="navbar-nav">
+                    <a href="/index.html" class="navbar-link">Ana Sayfa</a>
+                    <button id="logoutBtn" class="navbar-link">Çıkış Yap</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mt-8 px-4">
+        <div class="card p-8 mb-8">
+            <div class="text-center mb-8">
+                <div class="bg-blue-100 text-blue-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-bold">Admin Kontrol Paneli</h2>
+                <p class="text-gray-500 mt-2">Kullanıcıları ve videoları yönetin</p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Kullanıcı Yönetimi -->
+                <div class="card p-6">
+                    <h3 class="text-xl font-bold mb-6 pb-2 border-b border-gray-200">Kullanıcı Yönetimi</h3>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <label class="form-label" for="userId">
+                                Kullanıcı ID
+                            </label>
+                            <input class="form-input" 
+                                   id="userId" type="text" placeholder="Kullanıcı ID girin">
+                        </div>
+                        
+                        <div>
+                            <label class="form-label" for="banReason">
+                                İşlem Nedeni (Opsiyonel)
+                            </label>
+                            <input class="form-input" 
+                                   id="banReason" type="text" placeholder="İşlem nedeni girin">
+                        </div>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <button id="banUserBtn" class="btn bg-red-500 hover:bg-red-600 text-white">
+                                Kullanıcıyı Banla
+                            </button>
+                            <button id="unbanUserBtn" class="btn bg-green-500 hover:bg-green-600 text-white">
+                                Banı Kaldır
+                            </button>
+                            <button id="warnUserBtn" class="btn bg-yellow-500 hover:bg-yellow-600 text-white">
+                                Kullanıcıyı Uyar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video Yönetimi -->
+                <div class="card p-6">
+                    <h3 class="text-xl font-bold mb-6 pb-2 border-b border-gray-200">Video Yönetimi</h3>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <label class="form-label" for="videoId">
+                                Video ID
+                            </label>
+                            <input class="form-input" 
+                                   id="videoId" type="text" placeholder="Video ID girin">
+                        </div>
+                        
+                        <div>
+                            <label class="form-label" for="videoBanReason">
+                                İşlem Nedeni (Opsiyonel)
+                            </label>
+                            <input class="form-input" 
+                                   id="videoBanReason" type="text" placeholder="İşlem nedeni girin">
+                        </div>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <button id="banVideoBtn" class="btn bg-red-500 hover:bg-red-600 text-white">
+                                Videoyu Banla
+                            </button>
+                            <button id="unbanVideoBtn" class="btn bg-green-500 hover:bg-green-600 text-white">
+                                Banı Kaldır
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kullanıcı ve Video Listesi -->
+            <div class="card p-6 mt-8">
+                <h3 class="text-xl font-bold mb-6 pb-2 border-b border-gray-200">Kullanıcılar ve Videolar</h3>
+                
+                <div class="flex flex-wrap gap-3 mb-6">
+                    <button id="loadUsersBtn" class="btn bg-blue-500 hover:bg-blue-600 text-white">
+                        Kullanıcıları Yükle
+                    </button>
+                    <button id="loadVideosBtn" class="btn bg-purple-500 hover:bg-purple-600 text-white">
+                        Videoları Yükle
+                    </button>
+                    <button id="loadFlaggedCommentsBtn" class="btn bg-orange-500 hover:bg-orange-600 text-white">
+                        Şüpheli Yorumları Yükle
+                    </button>
+                </div>
+                
+                <div id="dataContainer" class="bg-gray-50 rounded-xl p-6 min-h-64">
+                    <div class="text-center py-12">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                        </svg>
+                        <p class="text-gray-500">Veri yüklemek için yukarıdaki butonlardan birine tıklayın.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer mt-12">
+        <div class="footer-container">
+            <div class="footer-bottom">
+                <p>&copy; 2023 AkışTV. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module">
+        // JWT utility fonksiyonlarını import et
+        import { getToken, logout } from './utils/jwt.js';
+
+        // Kullanıcı oturum kontrolü
+        const token = getToken();
+        
+        if (!token) {
+            window.location.href = '/login.html';
+        }
+
+        // Çıkış yap butonu
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            logout();
+            window.location.href = '/index.html';
+        });
+
+        // API çağrısı yapmak için yardımcı fonksiyon
+        async function apiCall(endpoint, method = 'GET', body = null) {
+            const options = {
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            };
+            
+            if (body) {
+                options.body = JSON.stringify(body);
+            }
+            
+            try {
+                const response = await fetch(`http://localhost:3001/api${endpoint}`, options);
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.message || 'Bir hata oluştu');
+                }
+                
+                return data;
+            } catch (error) {
+                alert(`Hata: ${error.message}`);
+                return null;
+            }
+        }
+
+        // Kullanıcıyı banla
+        document.getElementById('banUserBtn').addEventListener('click', async function() {
+            const userId = document.getElementById('userId').value;
+            const reason = document.getElementById('banReason').value;
+            
+            if (!userId) {
+                alert('Lütfen bir kullanıcı ID\'si girin');
+                return;
+            }
+            
+            const result = await apiCall(`/moderation/users/${userId}/ban`, 'PUT', {
+                reason: reason || 'İdari işlem'
+            });
+            
+            if (result) {
+                alert('Kullanıcı başarıyla banlandı');
+                document.getElementById('userId').value = '';
+                document.getElementById('banReason').value = '';
+            }
+        });
+
+        // Kullanıcının banını kaldır
+        document.getElementById('unbanUserBtn').addEventListener('click', async function() {
+            const userId = document.getElementById('userId').value;
+            
+            if (!userId) {
+                alert('Lütfen bir kullanıcı ID\'si girin');
+                return;
+            }
+            
+            const result = await apiCall(`/moderation/users/${userId}/unban`, 'PUT');
+            
+            if (result) {
+                alert('Kullanıcının banı başarıyla kaldırıldı');
+                document.getElementById('userId').value = '';
+            }
+        });
+
+        // Kullanıcıyı uyar
+        document.getElementById('warnUserBtn').addEventListener('click', async function() {
+            const userId = document.getElementById('userId').value;
+            const reason = document.getElementById('banReason').value;
+            
+            if (!userId) {
+                alert('Lütfen bir kullanıcı ID\'si girin');
+                return;
+            }
+            
+            const result = await apiCall(`/moderation/users/${userId}/warn`, 'PUT', {
+                reason: reason || 'Uyarı'
+            });
+            
+            if (result) {
+                alert('Kullanıcı başarıyla uyarıldı');
+                document.getElementById('userId').value = '';
+                document.getElementById('banReason').value = '';
+            }
+        });
+
+        // Videoyu banla
+        document.getElementById('banVideoBtn').addEventListener('click', async function() {
+            const videoId = document.getElementById('videoId').value;
+            const reason = document.getElementById('videoBanReason').value;
+            
+            if (!videoId) {
+                alert('Lütfen bir video ID\'si girin');
+                return;
+            }
+            
+            const result = await apiCall(`/moderation/videos/${videoId}/ban`, 'PUT', {
+                reason: reason || 'İdari işlem'
+            });
+            
+            if (result) {
+                alert('Video başarıyla banlandı');
+                document.getElementById('videoId').value = '';
+                document.getElementById('videoBanReason').value = '';
+            }
+        });
+
+        // Videonun banını kaldır
+        document.getElementById('unbanVideoBtn').addEventListener('click', async function() {
+            const videoId = document.getElementById('videoId').value;
+            
+            if (!videoId) {
+                alert('Lütfen bir video ID\'si girin');
+                return;
+            }
+            
+            const result = await apiCall(`/moderation/videos/${videoId}/unban`, 'PUT');
+            
+            if (result) {
+                alert('Videonun banı başarıyla kaldırıldı');
+                document.getElementById('videoId').value = '';
+            }
+        });
+
+        // Kullanıcıları yükle
+        document.getElementById('loadUsersBtn').addEventListener('click', async function() {
+            const container = document.getElementById('dataContainer');
+            container.innerHTML = '<div class="text-center py-12"><div class="skeleton h-4 w-32 mx-auto mb-4"></div><div class="skeleton h-4 w-48 mx-auto"></div></div>';
+            
+            const users = await apiCall('/admin/users');
+            
+            if (users) {
+                let html = `
+                    <h4 class="font-bold text-lg mb-4">Kullanıcılar (${users.length})</h4>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ad</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">E-posta</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Durum</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Katılım Tarihi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                `;
+                
+                users.forEach(user => {
+                    const status = user.isBanned ? 
+                        '<span class="badge bg-red-100 text-red-800">Banlı</span>' : 
+                        '<span class="badge bg-green-100 text-green-800">Aktif</span>';
+                    
+                    const joinDate = new Date(user.createdAt).toLocaleDateString('tr-TR');
+                    
+                    html += `
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user._id}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${user.name}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.email}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">${status}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${joinDate}</td>
+                        </tr>
+                    `;
+                });
+                
+                html += `
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = '<div class="text-center py-12 text-gray-500">Kullanıcılar yüklenirken bir hata oluştu.</div>';
+            }
+        });
+
+        // Videoları yükle
+        document.getElementById('loadVideosBtn').addEventListener('click', async function() {
+            const container = document.getElementById('dataContainer');
+            container.innerHTML = '<div class="text-center py-12"><div class="skeleton h-4 w-32 mx-auto mb-4"></div><div class="skeleton h-4 w-48 mx-auto"></div></div>';
+            
+            const videos = await apiCall('/admin/videos');
+            
+            if (videos) {
+                let html = `
+                    <h4 class="font-bold text-lg mb-4">Videolar (${videos.length})</h4>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Başlık</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Yükleyen</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Durum</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Yükleme Tarihi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                `;
+                
+                videos.forEach(video => {
+                    const status = video.isBanned ? 
+                        '<span class="badge bg-red-100 text-red-800">Banlı</span>' : 
+                        '<span class="badge bg-green-100 text-green-800">Aktif</span>';
+                    
+                    const uploadDate = new Date(video.createdAt).toLocaleDateString('tr-TR');
+                    
+                    html += `
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${video._id}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${video.title}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${video.uploader?.name || 'Bilinmiyor'}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">${status}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${uploadDate}</td>
+                        </tr>
+                    `;
+                });
+                
+                html += `
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = '<div class="text-center py-12 text-gray-500">Videolar yüklenirken bir hata oluştu.</div>';
+            }
+        });
+
+        // Şüpheli yorumları yükle
+        document.getElementById('loadFlaggedCommentsBtn').addEventListener('click', async function() {
+            const container = document.getElementById('dataContainer');
+            container.innerHTML = '<div class="text-center py-12"><div class="skeleton h-4 w-32 mx-auto mb-4"></div><div class="skeleton h-4 w-48 mx-auto"></div></div>';
+            
+            // Bu endpoint henüz backend'de mevcut değil, şimdilik örnek veri gösteriyoruz
+            const flaggedComments = [
+                {
+                    _id: '1',
+                    text: 'Bu video çok kötü',
+                    user: { name: 'Kullanıcı1' },
+                    video: { title: 'Örnek Video 1' },
+                    flaggedReason: 'negative-comment',
+                    createdAt: new Date()
+                },
+                {
+                    _id: '2',
+                    text: 'Ne saçma bir video',
+                    user: { name: 'Kullanıcı2' },
+                    video: { title: 'Örnek Video 2' },
+                    flaggedReason: 'insult',
+                    createdAt: new Date()
+                }
+            ];
+            
+            let html = `
+                <h4 class="font-bold text-lg mb-4">Şüpheli Yorumlar (${flaggedComments.length})</h4>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Yorum</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kullanıcı</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Video</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Neden</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tarih</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+            `;
+            
+            flaggedComments.forEach(comment => {
+                const date = new Date(comment.createdAt).toLocaleDateString('tr-TR');
+                
+                html += `
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${comment.text}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${comment.user.name}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${comment.video.title}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${comment.flaggedReason}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${date}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <button class="btn bg-green-500 hover:bg-green-600 text-white text-xs mr-2">Onayla</button>
+                            <button class="btn bg-red-500 hover:bg-red-600 text-white text-xs">Sil</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video - AkışTV</title>
+    <link href="/style.css" rel="stylesheet">
+</head>
+<body>
+    <header class="navbar">
+        <div class="navbar-container">
+            <a href="/index.html" class="navbar-brand">AkışTV</a>
+            <nav>
+                <div class="navbar-nav" id="authLinks">
+                    <a href="/login.html" class="navbar-link">Giriş Yap</a>
+                    <a href="/register.html" class="navbar-link">Kayıt Ol</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mt-8 px-4">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Video Player Section -->
+            <div class="lg:col-span-2">
+                <div class="card p-6">
+                    <!-- Video Player -->
+                    <div class="bg-gradient-to-br from-gray-200 to-gray-300 border-2 border-dashed border-gray-300 rounded-xl w-full h-96 mb-6 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    
+                    <!-- Video Info -->
+                    <h1 class="text-2xl font-bold mb-2" id="videoTitle">Video Başlığı</h1>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center">
+                            <div class="bg-gray-200 border-2 border-dashed rounded-xl w-10 h-10 mr-3"></div>
+                            <div>
+                                <p class="font-medium" id="uploaderName">Kullanıcı Adı</p>
+                                <p class="text-sm text-gray-500" id="uploadDate">1 Ocak 2023</p>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="btn bg-gray-100 hover:bg-gray-200 text-gray-700">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                                </svg>
+                                Paylaş
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Video Stats -->
+                    <div class="flex items-center space-x-6 mb-6 pb-6 border-b border-gray-200">
+                        <div class="flex items-center">
+                            <button id="likeBtn" class="flex items-center text-gray-600 hover:text-red-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+                                </svg>
+                                <span id="likeCount">0</span>
+                            </button>
+                        </div>
+                        <div class="flex items-center">
+                            <button id="dislikeBtn" class="flex items-center text-gray-600 hover:text-blue-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018c.163 0 .326.02.485.06L17 4m0 0v9m0-9h2.765a2 2 0 011.789 2.894l-3.5 7A2 2 0 0118.264 15H17m0 0v9m0-9h-2.5" />
+                                </svg>
+                                <span id="dislikeCount">0</span>
+                            </button>
+                        </div>
+                        <div class="flex items-center text-gray-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                            </svg>
+                            <span id="commentCount">0</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Video Description -->
+                    <div class="mb-6">
+                        <p class="text-gray-700" id="videoDescription">Video açıklaması burada görünecek.</p>
+                    </div>
+                    
+                    <!-- Comment Section -->
+                    <div>
+                        <h3 class="text-xl font-bold mb-4">Yorumlar</h3>
+                        
+                        <!-- Add Comment Form -->
+                        <form id="commentForm" class="mb-6">
+                            <div class="mb-4">
+                                <textarea id="commentText" name="commentText" rows="3" class="form-textarea" placeholder="Yorumunuzu yazın..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Yorum Yap</button>
+                        </form>
+                        
+                        <!-- Comments List -->
+                        <div id="commentsList">
+                            <!-- Comments will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Related Videos Section -->
+            <div>
+                <div class="card p-6">
+                    <h3 class="text-xl font-bold mb-4">İlginizi Çekebilecek İçerikler</h3>
+                    
+                    <div class="space-y-4" id="relatedVideos">
+                        <!-- Related videos will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer mt-12">
+        <div class="footer-container">
+            <div class="footer-bottom">
+                <p>&copy; 2023 AkışTV. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module">
+        // JWT ve tema utility fonksiyonlarını import et
+        import { getToken, isAuthenticated, logout } from './utils/jwt.js';
+        import { initTheme, toggleTheme, getTheme } from './utils/theme.js';
+        
+        // Tema'yı uygula
+        initTheme();
+        
+        // URL'den video ID'sini al
+        const urlParams = new URLSearchParams(window.location.search);
+        const videoId = urlParams.get('id');
+        
+        // Kullanıcı oturum kontrolü
+        const token = getToken();
+        const user = JSON.parse(localStorage.getItem('user'));
+        
+        if (isAuthenticated() && user) {
+            const currentTheme = getTheme();
+            const themeToggleText = currentTheme === 'dark' ? ' Açık Tema' : ' Koyu Tema';
+            
+            // Admin kullanıcı mı kontrol et
+            const isAdmin = user.isAdmin === true;
+            
+            let adminLink = '';
+            if (isAdmin) {
+                adminLink = '<a href="/admin.html" class="navbar-link">Admin Paneli</a>';
+            }
+            
+            document.getElementById('authLinks').innerHTML = `
+                <a href="/upload.html" class="navbar-link">Video Yükle</a>
+                ${adminLink}
+                <a href="/profile.html" class="navbar-link">${user.name}</a>
+                <button id="themeToggleBtn" class="navbar-link">${themeToggleText}</button>
+                <button id="logoutBtn" class="navbar-link">Çıkış Yap</button>
+            `;
+            
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                logout();
+                window.location.reload();
+            });
+            
+            document.getElementById('themeToggleBtn').addEventListener('click', function() {
+                const newTheme = toggleTheme();
+                const themeToggleText = newTheme === 'dark' ? ' Açık Tema' : ' Koyu Tema';
+                this.textContent = themeToggleText;
+            });
+        }
+        
+        // Video detaylarını yükle
+        async function loadVideoDetails() {
+            if (!videoId) {
+                console.error('Video ID bulunamadı');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`http://localhost:3001/api/videos/${videoId}`);
+                const video = await response.json();
+                
+                if (response.ok) {
+                    // Video bilgilerini ekrana yaz
+                    document.getElementById('videoTitle').textContent = video.title;
+                    document.getElementById('uploaderName').textContent = video.uploader?.name || 'Bilinmeyen Kullanıcı';
+                    document.getElementById('videoDescription').textContent = video.description || '';
+                    
+                    // Tarih formatını düzenle
+                    const uploadDate = new Date(video.createdAt);
+                    document.getElementById('uploadDate').textContent = uploadDate.toLocaleDateString('tr-TR');
+                    
+                    // Beğeni ve yorum sayılarını göster
+                    document.getElementById('likeCount').textContent = video.likeCount || 0;
+                    document.getElementById('dislikeCount').textContent = video.dislikeCount || 0;
+                    document.getElementById('commentCount').textContent = video.commentCount || 0;
+                    
+                    // Yorumları yükle
+                    loadComments(video.comments);
+                } else {
+                    console.error('Video detayları yüklenirken hata oluştu:', video.message);
+                }
+            } catch (error) {
+                console.error('Video detayları yüklenirken hata oluştu:', error);
+            }
+        }
+        
+        // Yorumları yükle
+        function loadComments(comments) {
+            const commentsContainer = document.getElementById('commentsList');
+            
+            if (!comments || comments.length === 0) {
+                commentsContainer.innerHTML = '<p class="text-gray-500 text-center">Henüz yorum yapılmamış.</p>';
+                return;
+            }
+            
+            commentsContainer.innerHTML = comments.map(comment => `
+                <div class="border-b border-gray-200 pb-4 mb-4 last:border-b-0 last:pb-0 last:mb-0">
+                    <div class="flex items-center mb-2">
+                        <div class="bg-gray-200 border-2 border-dashed rounded-xl w-8 h-8 mr-2"></div>
+                        <div>
+                            <p class="font-medium text-sm">${comment.user?.name || 'Bilinmeyen Kullanıcı'}</p>
+                            <p class="text-xs text-gray-500">${new Date(comment.createdAt).toLocaleDateString('tr-TR')}</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700">${comment.text}</p>
+                </div>
+            `).join('');
+        }
+        
+        // İlgili videoları yükle
+        async function loadRelatedVideos() {
+            try {
+                const response = await fetch('http://localhost:3001/api/videos');
+                const videos = await response.json();
+                
+                if (response.ok) {
+                    const relatedVideosContainer = document.getElementById('relatedVideos');
+                    
+                    // Mevcut videoyu hariç tut ve ilk 5 videoyu göster
+                    const relatedVideos = videos.filter(video => video._id !== videoId).slice(0, 5);
+                    
+                    if (relatedVideos.length === 0) {
+                        relatedVideosContainer.innerHTML = '<p class="text-gray-500 text-center">İlgili video bulunamadı.</p>';
+                        return;
+                    }
+                    
+                    relatedVideosContainer.innerHTML = relatedVideos.map(video => `
+                        <div class="flex items-center cursor-pointer hover:bg-gray-50 p-2 rounded-lg">
+                            <div class="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16 mr-3"></div>
+                            <div>
+                                <h4 class="font-medium text-sm line-clamp-2">${video.title}</h4>
+                                <p class="text-xs text-gray-500">${video.uploader?.name || 'Bilinmeyen Kullanıcı'}</p>
+                                <p class="text-xs text-gray-500">${video.likeCount || 0} beğeni • ${video.commentCount || 0} yorum</p>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    console.error('İlgili videolar yüklenirken hata oluştu:', videos.message);
+                }
+            } catch (error) {
+                console.error('İlgili videolar yüklenirken hata oluştu:', error);
+            }
+        }
+        
+        // Videoyu beğen
+        document.getElementById('likeBtn').addEventListener('click', async function() {
+            if (!isAuthenticated()) {
+                alert('Bu işlemi yapmak için giriş yapmalısınız.');
+                window.location.href = '/login.html';
+                return;
+            }
+            
+            try {
+                const response = await fetch(`http://localhost:3001/api/videos/${videoId}/like`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    // Sayfayı yenile
+                    loadVideoDetails();
+                } else {
+                    const data = await response.json();
+                    alert(data.message || 'Beğeni işlemi başarısız oldu.');
+                }
+            } catch (error) {
+                console.error('Video beğenilirken hata oluştu:', error);
+                alert('Beğeni işlemi sırasında bir hata oluştu.');
+            }
+        });
+        
+        // Videoyu beğenme
+        document.getElementById('dislikeBtn').addEventListener('click', async function() {
+            if (!isAuthenticated()) {
+                alert('Bu işlemi yapmak için giriş yapmalısınız.');
+                window.location.href = '/login.html';
+                return;
+            }
+            
+            try {
+                const response = await fetch(`http://localhost:3001/api/videos/${videoId}/dislike`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    // Sayfayı yenile
+                    loadVideoDetails();
+                } else {
+                    const data = await response.json();
+                    alert(data.message || 'Beğenmeme işlemi başarısız oldu.');
+                }
+            } catch (error) {
+                console.error('Video beğenilirken hata oluştu:', error);
+                alert('Beğenmeme işlemi sırasında bir hata oluştu.');
+            }
+        });
+        
+        // Yorum ekle
+        document.getElementById('commentForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (!isAuthenticated()) {
+                alert('Yorum yapmak için giriş yapmalısınız.');
+                window.location.href = '/login.html';
+                return;
+            }
+            
+            const commentText = document.getElementById('commentText').value.trim();
+            
+            if (!commentText) {
+                alert('Lütfen yorumunuzu yazın.');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`http://localhost:3001/api/videos/${videoId}/comment`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ text: commentText })
+                });
+                
+                if (response.ok) {
+                    // Formu temizle ve yorumları yeniden yükle
+                    document.getElementById('commentText').value = '';
+                    loadVideoDetails();
+                } else {
+                    const data = await response.json();
+                    alert(data.message || 'Yorum eklenirken bir hata oluştu.');
+                }
+            } catch (error) {
+                console.error('Yorum eklenirken hata oluştu:', error);
+                alert('Yorum eklenirken bir hata oluştu.');
+            }
+        });
+        
+        // Sayfa yüklendiğinde video detaylarını ve ilgili videoları getir
+        document.addEventListener('DOMContentLoaded', function() {
+            loadVideoDetails();
+            loadRelatedVideos();
+        });
+    </script>
+</body>
+</html>
